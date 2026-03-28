@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weather App</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .app {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+
+  h1 {
+    margin-bottom: 15px;
+  }
+
+  .search-box {
+    display: flex;
+    margin-bottom: 15px;
+  }
+
+  .search-box input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px 0 0 10px;
+    outline: none;
+  }
+
+  .search-box button {
+    padding: 10px;
+    border: none;
+    background: #4facfe;
+    color: white;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+  }
+
+  .search-box button:hover {
+    background: #3a8de0;
+  }
+
+  .weather-info {
+    margin-top: 10px;
+  }
+
+  .weather-info p {
+    margin: 5px 0;
+    font-size: 16px;
+  }
+
+  .error {
+    color: red;
+    margin-top: 10px;
+  }
+  .credit {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.credit a {
+  color: #4facfe;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.credit a:hover {
+  text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <h1>🌤 Weather</h1>
+
+  <div class="search-box">
+    <input type="text" id="cityInput" placeholder="Enter city">
+    <button onclick="getWeather()">Search</button>
+  </div>
+
+  <div class="weather-info">
+    <p><strong id="city"></strong></p>
+    <p>🌡 Temp: <span id="temperature"></span></p>
+    <p>💧 Humidity: <span id="humidity"></span></p>
+    <p>🌬 Wind: <span id="wind-speed"></span></p>
+  </div>
+
+  <p class="error" id="error"></p>
+  <p class="credit">
+  Created by 
+  <a href="https://wa.me/07038663083" target="_blank">Onutech</a>
+</p>
+</div>
+
+<script>
+const APIkey = '9b2b5c5972a4d5baec51f8999f78c3bd';
+
+function getWeather() {
+  const city = document.getElementById('cityInput').value;
+
+  if (!city) {
+    document.getElementById('error').textContent = "Please enter a city";
+    return;
+  }
+
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${APIkey}&units=metric`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("City not found");
+      }
+      return response.json();
+    })
+    .then(data => {
+      document.getElementById('error').textContent = "";
+
+      document.getElementById('city').textContent = data.name;
+      document.getElementById('temperature').textContent = data.main.temp + " °C";
+      document.getElementById('humidity').textContent = data.main.humidity + "%";
+      document.getElementById('wind-speed').textContent = data.wind.speed + " m/s";
+    })
+    .catch(error => {
+      document.getElementById('error').textContent = error.message;
+    });
+}
+</script>
+
+</body>
+</html>
